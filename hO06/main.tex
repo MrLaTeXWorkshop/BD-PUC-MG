@@ -1,0 +1,71 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{hyperref}
+\usepackage[a4paper,top=3.5cm,left=3cm,right=3cm,bottom=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{gray}{0.6}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%configurando identação e separação de parágrafos
+\parindent 1.27cm
+\parskip   6pt
+
+%configurando os hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=green,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+%títulos,autor e data
+\title{\textbf{H0O6 - Modelo SAM}}
+\author{Gustavo Lopes Rodrigues}
+\date{2021}
+
+\begin{document}
+    
+    \maketitle
+
+    \textbf{1)}
+
+    \begin{figure}[ht]
+        \includegraphics{pedegalinha.jpg}
+        \caption{Modelo Pé de galinha}
+    \end{figure}
+
+    \newpage 
+
+    \textbf{2)}
+    \lstinputlisting[language=SQL]{hO06.sql}
+
+
+\end{document}

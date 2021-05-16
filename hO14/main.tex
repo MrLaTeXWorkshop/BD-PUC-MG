@@ -1,0 +1,187 @@
+\documentclass[aspectratio=169]{beamer}	 	
+% ---
+% PACOTES
+% ---
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+\usepackage[brazil]{babel}		% Idioma do documento
+\usepackage{color}			      % Controle das cores
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}		  % Selecao de codigos de fonte.
+\usepackage{graphicx}			    % Inclusão de gráficos
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{txfonts}			    % Fontes virtuais
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+
+\usetheme{Warsaw}
+
+\setbeamercolor{normal text}{fg=white,bg=black!85}
+\setbeamercolor{structure}{fg=white}
+
+\setbeamercolor{alerted text}{fg=red!85!black}
+
+\setbeamercolor{item projected}{use=item,fg=black,bg=item.fg!35}
+
+\setbeamercolor*{framesubtitle}{fg=white}
+
+\setbeamercolor*{block title}{parent=structure,bg=black!60}
+\setbeamercolor*{block body}{fg=black,bg=black!10}
+\setbeamercolor*{block title alerted}{parent=alerted text,bg=black!15}
+\setbeamercolor*{block title example}{parent=example text,bg=black!15}
+
+\setbeamercolor{titlelike}{parent=structure}
+
+% para fontes matemáticas
+% Enconte mais temas e cores em http://www.hartwork.org/beamer-theme-matrix/ 
+% Veja também http://deic.uab.es/~iblanes/beamer_gallery/index.html
+
+% Customizações de Cores: fg significa cor do texto e bg é cor do fundo
+
+% informações do PDF
+\makeatletter
+\hypersetup{
+     	%pagebackref=true,
+		pdftitle={\@title}, 
+		pdfauthor={\@author},
+    	pdfsubject={Hands-On 14},
+	    pdfcreator={GLR},
+		pdfkeywords={HandsOn14}{LaTeX}, 
+		colorlinks=true,       		% false: boxed links; true: colored links
+    	linkcolor=black,          	% color of internal links
+    	citecolor=blue,        		% color of links to bibliography
+    	filecolor=magenta,      		% color of file links
+		urlcolor=blue,
+		bookmarksdepth=4
+}
+\makeatother
+
+    %TABELA DE CONTEÚDO
+
+    \setbeamercolor{section in toc}{fg=alerted text.fg, fg = red}
+    
+
+    \definecolor{SectionBox}{RGB}{60,160,0}
+    \definecolor{UniGreen}{RGB}{ 0,139,0}
+    \definecolor{TitleGreen}{RGB}{0,120,0}
+    \setbeamercolor{title}{fg=TitleGreen}
+    \setbeamercolor{structure}{fg=UniGreen} 
+    \setbeamercolor{item projected}{bg=UniGreen, fg=white} %define color of the item-bullets
+    \setbeamercolor{button}{bg=UniGreen}
+
+    \setbeamertemplate{section in head/foot}{\hfill\protect\tikz\protect\node[rectangle,fill=SectionBox!90,rounded corners=1pt,inner sep=1pt,] {\textcolor{white}{\insertsectionhead}};}
+    \setbeamertemplate{section in head/foot shaded}{\textcolor{structure!40}{\hfill\insertsectionhead}}
+
+    \setbeamertemplate{headline}{%
+\leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{palette quaternary}%
+    \insertsectionnavigationhorizontal{\paperwidth}{}{\hskip0pt plus1filll}
+    \end{beamercolorbox}%
+  }
+}
+
+\insertsectionnavigationhorizontal{\paperwidth}{\hskip0pt plus1filll}{\hskip0pt plus1filll}
+
+
+% ---
+
+% --- Informações do documento ---
+\title{Hands-On 14}
+% ---
+
+% ----------------- INÍCIO DO DOCUMENTO --------------------------------------
+\begin{document}
+    % ----------------- NOVO SLIDE --------------------------------
+    \begin{frame}
+
+    \titlepage
+
+    \end{frame}
+
+    % ----------------- NOVO SLIDE --------------------------------]
+    \section{Perguntas}
+
+    \begin{frame}{Perguntas}
+
+
+        \textbf{1.} O escalonamento $S_a$ é completo? Justifique sua resposta.
+
+        \textbf{2.} Considerando que as últimas operações no escalonamento $S_a$ 
+        sejam $c_2$, $c_3$, $c_1$, nessa ordem, o escalonamento $S_a$ é recuperável? 
+        Justifique sua resposta apresentando todas as leituras sujas 
+        existentes.
+
+        \textbf{3.} O escalonamento $S_a$ é serializável? Justifique sua resposta 
+        apresentando o grafo de precedência completo.
+
+
+    \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+    \begin{frame}{Perguntas}
+
+        Considere que o escalonamento Sa apresentado abaixo foi constituído
+        a partir das transações $T_1$, $T_2$ e $T_3$ também apresentadas abaixo. 
+        Ressalta-se que, em um SGBDR diversas transações devem ser escalonadas
+        para executarem simultaneamente, aumentando assim a concorrência e,
+        consequentemente, diminuindo o tempo de processamento. No entanto, 
+        tal concorrência demanda a utilização de técnicas de controle de 
+        concorrência para garantir as propriedades de Atomicidade, 
+        Consistência, Isolamento e Durabilidade (ACID). \newline
+
+            $T_1$ = r(x), r(y), w(x), r(z)
+
+            $T_2$ = r(z), r(x), r(y), w(z)
+
+            $T_3$ = r(y), r(z), w(y), r(x)
+
+            $S_a$ = $r_3$(y), $r_2$(z), $r_1$(x), $r_2$(x), $r_3$(z), $r_2$(y), $w_3$(y),
+            $r_1$(y), $w_2$(z), $w_1$(x), $r_3$(x), $r_1$(z)
+
+        
+
+    \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+    \section{Questão1}
+
+    \begin{frame}{Questão1}
+
+        R: O escalonamento $S_a$ não é completa, pois ela não atende 
+        os requisitos para ser um escalonamento completo. O mais perceptível, é que este 
+        não apresenta a ordem das operações nas transações originais preservada.
+
+    \end{frame}
+
+    \section{Questão2}
+
+    \begin{frame}{Questão2}
+
+        R: O escalonamento $S_a$ não é recuperável, devido a presença de leituras sujas: \newline
+
+        $S_a$ = $r_3$(y), $r_2$(z), $r_1$(x), $r_2$(x), $r_3$(z), \colorbox{red}{$r_2$(y)}, \colorbox{red}{$w_3$(y)},
+        $r_1$(y), $w_2$(z), $w_1$(x), $r_3$(x), $r_1$(z)
+
+    \end{frame}
+
+    \section{Questão3}
+
+    \begin{frame}{Questão3}
+
+        \begin{figure}[ht]
+            \centering
+            \begin{tikzpicture}[main/.style = {draw, circle,minimum size=10mm}] 
+              \node[main] (1) at (2,2)  {$T_1$}; 
+              \node[main] (2) at (0,2)  {$T_2$}; 
+              \node[main] (3) at (-2,0) {$T_3$};
+        
+              \draw [-{Latex[length=3mm]}] (2) to [out=150,in=130] (3);
+              \draw [-{Latex[length=3mm]}] (3) to [out=-50,in=-50] (2);
+              \draw [-{Latex[length=3mm]}] (2) -- (1);
+            \end{tikzpicture} 
+            \caption{Grafo de precedência para $S_a$}
+          \end{figure}
+          Como demonstrando pela figura acima, o escalonamento $S_a$ não é 
+          serializável, pois existe um ciclo entre $T_3$ e $T_2$.
+    \end{frame}
+% ----------------- FIM DO DOCUMENTO -----------------------------------------
+\end{document}

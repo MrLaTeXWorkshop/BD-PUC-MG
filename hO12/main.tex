@@ -1,0 +1,495 @@
+\documentclass[aspectratio=169]{beamer}	 	
+
+
+\usetheme{Warsaw}
+
+\setbeamercolor{normal text}{fg=white,bg=black!90}
+\setbeamercolor{structure}{fg=white}
+
+\setbeamercolor{alerted text}{fg=red!85!black}
+
+\setbeamercolor{item projected}{use=item,fg=black,bg=item.fg!35}
+
+\setbeamercolor*{palette primary}{use=structure,fg=structure.fg}
+\setbeamercolor*{palette secondary}{use=structure,fg=structure.fg!95!white}
+\setbeamercolor*{palette tertiary}{use=structure,fg=structure.fg!90!black}
+\setbeamercolor*{palette quaternary}{use=structure,fg=structure.fg!95!black,bg=black!80}
+
+\setbeamercolor*{framesubtitle}{fg=white}
+
+\setbeamercolor*{block title}{parent=structure,bg=black!60}
+\setbeamercolor*{block body}{fg=black,bg=black!10}
+\setbeamercolor*{block title alerted}{parent=alerted text,bg=black!15}
+\setbeamercolor*{block title example}{parent=example text,bg=black!15}
+% para fontes matemáticas
+% Enconte mais temas e cores em http://www.hartwork.org/beamer-theme-matrix/ 
+% Veja também http://deic.uab.es/~iblanes/beamer_gallery/index.html
+
+% Customizações de Cores: fg significa cor do texto e bg é cor do fundo
+
+% informações do PDF
+\makeatletter
+\hypersetup{
+     	%pagebackref=true,
+		pdftitle={\@title}, 
+		pdfauthor={\@author},
+    	pdfsubject={Hands-On 12},
+	    pdfcreator={GLR},
+		pdfkeywords={HandsOn12}{LaTeX}, 
+		colorlinks=true,       		% false: boxed links; true: colored links
+    	linkcolor=black,          	% color of internal links
+    	citecolor=blue,        		% color of links to bibliography
+    	filecolor=magenta,      		% color of file links
+		urlcolor=blue,
+		bookmarksdepth=4
+}
+\makeatother
+
+% ---
+% PACOTES
+% ---
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+\usepackage[brazil]{babel}		% Idioma do documento
+\usepackage{color}			      % Controle das cores
+\usepackage[T1]{fontenc}		  % Selecao de codigos de fonte.
+\usepackage{graphicx}			    % Inclusão de gráficos
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{txfonts}			    % Fontes virtuais
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+% ---
+
+% --- Informações do documento ---
+\title{Hands-On 12}
+% ---
+
+% ----------------- INÍCIO DO DOCUMENTO --------------------------------------
+\begin{document}
+    % ----------------- NOVO SLIDE --------------------------------
+    \begin{frame}
+
+    \titlepage
+
+    
+
+    \end{frame}
+
+    %TABELA DE CONTEÚDO
+
+    \AtBeginSection[]
+    {
+    \begin{frame}
+      \frametitle{Conteúdo}
+    \tableofcontents[currentsection]
+    \end{frame}
+    }
+
+    % ----------------- NOVO SLIDE --------------------------------]
+    \section{Query 1}
+
+    \begin{frame}{Query}
+     
+      Em SQL
+
+      \begin{flushleft}
+          SELECT A.CPF, A.Nome, B.Nome \\
+          FROM Funcionarios A, Clientes B, Aluguel C, Funcionarios D \\
+          WHERE A.CPF=B.CPF \\
+          AND B.CPF=C.CPF\_Cliente \\
+          AND B.Sexo='M' \\
+          AND C.ValorPagar>50 \\
+          AND A.CPF=D.CPF\_Supervisor \\
+      \end{flushleft}
+
+    \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+
+    \begin{frame}{Query}
+  
+      Em Algebra Relacional
+      \begin{flushleft}
+        $\pi$ A.CPF, A.Nome, B.Nome $\sigma$ A.CPF = B.CPF $\wedge$ B.CPF = C.CPF\_Cliente $\wedge$ B.Sexo = 'M' $\wedge$ C.ValorPagar > 50 $\wedge$ A.CPF = D.CPF\_Supervisor ( ( ( $\rho$ A Funcionarios $\bowtie$ $\rho$ B Clientes ) $\bowtie$ $\rho$ C Aluguel ) $\bowtie$ $\rho$ D Funcionarios ) 
+      \end{flushleft}
+    \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+    
+
+    \begin{frame}{Árvore não otimizada}
+     
+      \begin{center}
+        \begin{tikzpicture}[
+          scale=0.5, transform shape,
+          operation/.style={very thick, minimum size=7mm},
+          table/.style={rectangle, draw=black, minimum size=5mm},
+          ]
+          %Nodes
+          \node[operation]  (first)  at (0,1) {$\pi$ A.CPF, A.Nome, B.Nome};
+          \node[operation]  (second) at (0,0) {$\sigma$ A.CPF = B.CPF $\wedge$ B.CPF = C.CPF\_Cliente $\wedge$ B.Sexo = 'M' $\wedge$ C.ValorPagar > 50 $\wedge$ A.CPF = D.CPF\_Supervisor };
+          \node[table]      (tableD) at (2,-2.5) {D};
+          \node[operation]  (fourth) at (-2,-2.5){$\times$};
+          \node[table]      (tableC) at (0,-4.5) {C};
+          \node[operation]  (fifth)  at (-4,-4.5){$\times$};
+          \node[table]      (tableA) at (-6,-6.5) {A};
+          \node[table]      (tableB) at (-2,-6.5) {B};
+          
+          %Lines
+          \draw[-] (first.south) -- (second.north);
+          \draw[-] (second.south) -- (tableD.north);
+          \draw[-] (second.south) -- (fourth.north);
+          \draw[-] (fourth.south) -- (tableC.north);
+          \draw[-] (fourth.south) -- (fifth.north);
+          \draw[-] (fifth.south) -- (tableA.north);
+          \draw[-] (fifth.south) -- (tableB.north);
+          \end{tikzpicture}
+      \end{center}
+
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Árvore otimizada}
+   
+    \begin{center}
+      \begin{tikzpicture}[
+        scale=0.5, transform shape,
+        operation/.style={very thick, minimum size=7mm},
+        table/.style={rectangle, draw=black, minimum size=5mm},
+        ]
+        %Nodes
+        \node[operation]  (first)  at (0,1) {$\pi$ A.CPF, A.Nome, B.Nome};
+        \node[operation]  (second) at (0,0) {$\bowtie$ A.CPF=D.CPF\_SUPERVISOR};
+        \node[operation]  (omega6) at (3,-2.5) {$\pi$ D.CPF\_SUPERVISOR};
+        \node[table]      (tableD) at (3,-3.5) {D};
+        \node[operation]  (fourth) at (-3,-2.5){$\bowtie$ B.CPF=C.CPF\_CLIENTE};
+        \node[operation]  (omega1) at (0,-5.5){$\sigma$ ValorPagar > 50};
+        \node[operation]  (omega5) at (0,-4.5) {$\pi$ C.CPF\_Cliente};
+        \node[table]      (tableC) at (0,-6.5) {C};
+        \node[operation]  (fifth)  at (-6,-4.5){$\bowtie$ A.CPF=B.CPF};
+        \node[operation]  (omega3) at (-9,-6.5) {$\pi$ A.Nome, A.CPF};
+        \node[table]      (tableA) at (-9,-7.5) {A};
+        \node[operation]  (omega2) at (-3,-7.5) {$\sigma$ B.Sexo='M'};
+        \node[operation]  (omega4) at (-3,-6.5) {$\pi$ B.Nome, B.CPF};
+        \node[table]      (tableB) at (-3,-8.5) {B};
+        
+        %Lines
+        \draw[-] (first.south) -- (second.north);
+        \draw[-] (second.south) -- (omega6.north);
+        \draw[-] (omega6.south) -- (tableD.north);
+        \draw[-] (second.south) -- (fourth.north);
+        \draw[-] (fourth.south) -- (omega5.north);
+        \draw[-] (omega5.south) -- (omega1.north);
+        \draw[-] (omega1.south) -- (tableC.north);
+        \draw[-] (fourth.south) -- (fifth.north);
+        \draw[-] (fifth.south) -- (omega3.north);
+        \draw[-] (omega3.south) -- (tableA.north);
+        \draw[-] (fifth.south) -- (omega4.north);
+        \draw[-] (omega4.south) -- (omega2.north);
+        \draw[-] (omega2.south) -- (tableB.north);
+        \end{tikzpicture}
+    \end{center}
+
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Query Otimizada}
+    Em Algebra Relacional
+    \begin{flushleft}
+     A $\rightarrow$ $\pi$ A.Nome, A.CPF $\rho$ A Funcionarios 
+
+     B $\rightarrow$ $\pi$ B.Nome, B.CPF $\sigma$ B.Sexo ='M' $\rho$ B Clientes
+
+     AB $\rightarrow$ A $\bowtie$ A.CPF=B.CPF B
+
+     C $\rightarrow$ $\pi$ C.CPF\_Cliente $\sigma$ ValorPagar>50 $\rho$ C Aluguel
+
+     CAB $\rightarrow$ AB $\bowtie$ B.CPF=C.CPF\_Cliente C
+
+     D $\rightarrow$ $\pi$ D.CPF\_Supervisor $\rho$ D Funcionarios 
+
+     DCAB $\rightarrow$ CAB $\bowtie$ A.CPF=D.CPF\_Supervisor D
+
+     $\pi$ A.CPF, A.Nome, B.Nome DCAB
+    \end{flushleft}
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Plano de execução}
+    
+    \begin{enumerate}
+      \item Pesquisa Linear
+      \item Junção Loop Único
+      \item Pesquisa Linear 
+      \item Junção de Loop Único 
+      \item Junção de Loop Único 
+    \end{enumerate}
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+
+  \section{Query 2}
+
+  \begin{frame}{Query}
+  
+    Em SQL
+
+    \begin{flushleft}
+      SELECT A.Nome, C.Nome \\
+      FROM Filmes A, AtoresEmFilmes B, Atores C, Midias D \\
+      WHERE A.Codigo=B.CodFilme \\
+      AND B.CodAtor=C.Codigo \\
+      AND A.Genero="Aventura" \\
+      AND A.Codigo=D.CodFilme \\
+      AND D.PrecoDiaria>10 \\
+    \end{flushleft}
+
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Query}
+  
+    Em Algebra Relacional
+    \begin{flushleft}
+      $\pi$ A.Nome, C.Nome $\sigma$ A.Codigo = B.CodFilme $\wedge$ B.CodAtor = C.Codigo $\wedge$ A.Genero = 'Aventura' $\wedge$ A.Codigo = D.CodFilme $\wedge$ D.PrecoDiaria > 10 ( ( ( $\rho$ A Filmes $\bowtie$ $\rho$ B AtoresEmFilmes ) $\bowtie$ $\rho$ C Atores ) $\bowtie$ $\rho$ D Midias ) 
+    \end{flushleft}
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+
+  \begin{frame}{Árvore não otimizada}
+   
+    \begin{center}
+      \begin{tikzpicture}[
+        scale=0.5, transform shape,
+        operation/.style={very thick, minimum size=7mm},
+        table/.style={rectangle, draw=black, minimum size=5mm},
+        ]
+        %Nodes
+        \node[operation]  (first)  at (0,0) {$\pi$ A.CPF, A.Nome, C.Nome};
+        \node[operation]  (second) at (0,-1) {$\sigma$ A.Codigo = B.CodFilme $\wedge$ B.CodAtor = C.Codigo $\wedge$ A.Genero = 'Aventura' $\wedge$ A.Codigo = D.CodFilme $\wedge$ D.PrecoDiaria > 10 };
+        \node[table]      (tableD) at (2,-3.5) {D};
+        \node[operation]  (fourth) at (-2,-3.5){$\times$};
+        \node[table]      (tableC) at (0,-5.5) {C};
+        \node[operation]  (fifth)  at (-4,-5.5){$\times$};
+        \node[table]      (tableA) at (-6,-7.5) {A};
+        \node[table]      (tableB) at (-2,-7.5) {B};
+        
+        %Lines
+        \draw[-] (first.south) -- (second.north);
+        \draw[-] (second.south) -- (tableD.north);
+        \draw[-] (second.south) -- (fourth.north);
+        \draw[-] (fourth.south) -- (tableC.north);
+        \draw[-] (fourth.south) -- (fifth.north);
+        \draw[-] (fifth.south) -- (tableA.north);
+        \draw[-] (fifth.south) -- (tableB.north);
+        \end{tikzpicture}
+    \end{center}
+
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Árvore otimizada}
+   
+    \begin{center}
+      \begin{tikzpicture}[
+        scale=0.5, transform shape,
+        operation/.style={very thick, minimum size=7mm},
+        table/.style={rectangle, draw=black, minimum size=5mm},
+        ]
+        %Nodes
+        \node[operation]  (first)  at (0,1)     {$\pi$ A.CPF, A.Nome, C.Nome};
+        \node[operation]  (second) at (0,0)     {$\bowtie$ A.Codigo=D.CodFilme};
+        \node[operation]  (omega1) at (3,-2.5)  {$\pi$ D.CodFilme};
+        \node[operation]  (omega3) at (3,-3.5)  {$\sigma$ D.PrecoDiaria > 10};
+        \node[table]      (tableD) at (3,-4.5)  {D};
+        \node[operation]  (fourth) at (-3,-2.5) {$\bowtie$ B.CodAtor=C.Codigo};
+        \node[operation]  (omega4) at (0,-4.5)  {$\pi$ C.Nome, C.Codigo};
+        \node[table]      (tableC) at (0,-5.5)  {C};
+        \node[operation]  (fifth)  at (-6,-4.5) {$\bowtie$ A.Codigo=B.CodFilme};
+        \node[operation]  (omega2) at (-9,-7.5) {$\sigma$ A.Genero='Aventura'};
+        \node[operation]  (omega5) at (-9,-6.5) {$\pi$ A.Nome, A.Codigo};
+        \node[table]      (tableA) at (-9,-8.5) {A};
+        \node[table]      (tableB) at (-3,-6.5) {B};
+        
+        %Lines
+        \draw[-] (first.south) -- (second.north);
+        \draw[-] (second.south) -- (omega1.north);
+        \draw[-] (omega1.south) -- (omega3.north);
+        \draw[-] (omega3.south) -- (tableD.north);
+        \draw[-] (second.south) -- (fourth.north);
+        \draw[-] (fourth.south) -- (omega4.north);
+        \draw[-] (omega4.south) -- (tableC.north);
+        \draw[-] (fourth.south) -- (fifth.north);
+        \draw[-] (fifth.south) -- (omega5.north);
+        \draw[-] (omega5.south) -- (omega2.north);
+        \draw[-] (omega2.south) -- (tableA.north);
+        \draw[-] (fifth.south) -- (tableB.north);
+        \end{tikzpicture}
+    \end{center}
+
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Query Otimizada}
+  
+    Em Algebra Relacional
+    \begin{flushleft}
+      A $\rightarrow$ $\pi$ A.Nome, A.Codigo $\sigma$ A.Genero='Aventura' $\rho$ A Midias 
+
+      B $\rightarrow$ $\rho$ B AtoresEmFilmes
+ 
+      AB $\rightarrow$ A $\bowtie$ A.Codigo=B.Codigo B
+ 
+      C $\rightarrow$ $\pi$ C.Nome, C.Codigo $\rho$ C Atores
+ 
+      CAB $\rightarrow$ AB $\bowtie$ B.CodAtor=C.Codigo C
+ 
+      D $\rightarrow$ $\pi$ D.CodFilme $\sigma$ D.PrecoDiaria>10 $\rho$ D Midias 
+ 
+      DCAB $\rightarrow$ CAB $\bowtie$ A.Codigo=D.CodFilme D
+ 
+      $\pi$ A.CPF, A.Nome, C.Nome DCAB
+    \end{flushleft}
+  \end{frame}
+% ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Plano de execução}
+    
+    \begin{enumerate}
+      \item Pesquisa Linear 
+      \item Junção de Loop Único 
+      \item Junção de Loop Único 
+      \item Pesquisa Linear 
+      \item Junção de Loop Único
+    \end{enumerate}
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \section{Query 3}
+
+  \begin{frame}{Query}
+    
+    Em SQL
+    
+    \begin{flushleft}
+      SELECT A.CPF, A.Nome, B.Nome \\
+      FROM Funcionarios A, Clientes B, Aluguel C, Pagamentos D \\
+      WHERE A.CPF=B.CPF \\
+      AND C.ValorPagar>100 \\
+      AND B.CPF=C.CPF\_Cliente \\
+      AND D.Valor<50 \\
+      AND A.CPF\_Supervisor IS NULL \\
+      AND A.CPF=C.CPF\_Funcionario  \\
+    \end{flushleft}
+
+  \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Query}
+
+    Em Algebra Relacional
+    \begin{flushleft}
+      $\pi$ A.CPF, A.Nome, B.Nome $\sigma$ A.CPF = B.CPF $\wedge$ C.ValorPagar > 100 $\wedge$ B.CPF = C.CPF\_Cliente $\wedge$ D.Valor < 50 $\wedge$ A.CPF\_Supervisor = null $\wedge$ A.CPF = C.CPF\_Funcionario ( ( ( $\rho$ A Funcionarios $\bowtie$ $\rho$ B Clientes ) $\bowtie$ $\rho$ C Aluguel ) $\bowtie$ $\rho$ D Pagamentos ) 
+    \end{flushleft}
+  \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Árvore não otimizada}
+    
+    \begin{center}
+      \begin{tikzpicture}[
+        scale=0.5, transform shape,
+        operation/.style={very thick, minimum size=7mm},
+        table/.style={rectangle, draw=black, minimum size=5mm},
+        ]
+        %Nodes
+        \node[operation]  (first)  at (0,1) {$\pi$ A.CPF, A.Nome, B.Nome};
+        \node[operation]  (second) at (0,0) {$\sigma$ A.CPF = B.CPF $\wedge$ C.ValorPagar > 100 $\wedge$ B.CPF = C.CPF\_Cliente $\wedge$ D.Valor < 50 $\wedge$ A.CPF\_Supervisor = null $\wedge$ A.CPF = C.CPF\_Funcionario };
+        \node[table]      (tableD) at (2,-2.5) {D};
+        \node[operation]  (fourth) at (-2,-2.5){$\times$};
+        \node[table]      (tableC) at (0,-4.5) {C};
+        \node[operation]  (fifth)  at (-4,-4.5){$\times$};
+        \node[table]      (tableA) at (-6,-6.5) {A};
+        \node[table]      (tableB) at (-2,-6.5) {B};
+        
+        %Lines
+        \draw[-] (first.south) -- (second.north);
+        \draw[-] (second.south) -- (tableD.north);
+        \draw[-] (second.south) -- (fourth.north);
+        \draw[-] (fourth.south) -- (tableC.north);
+        \draw[-] (fourth.south) -- (fifth.north);
+        \draw[-] (fifth.south) -- (tableA.north);
+        \draw[-] (fifth.south) -- (tableB.north);
+        \end{tikzpicture}
+    \end{center}
+    
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Árvore otimizada}
+  
+    \begin{center}
+      \begin{tikzpicture}[
+        scale=0.5, transform shape,
+        operation/.style={very thick, minimum size=7mm},
+        table/.style={rectangle, draw=black, minimum size=5mm},
+        ]
+        %Nodes
+        \node[operation]  (first)  at (0,0)     {$\pi$ A.CPF, A.Nome, B.Nome};
+        \node[operation]  (second) at (0,-1)    {$\bowtie$ A.CPF = D.CPF\_Cliente};
+        \node[operation]  (omega6) at (3,-3.5)  {$\pi$ D.CPF\_Cliente };
+        \node[operation]  (omega1) at (3,-4.5)  {$\sigma$ D.Valor<50 };
+        \node[table]      (tableD) at (3,-5.5)  {D};
+        \node[operation]  (fourth) at (-3,-3.5) {$\bowtie$ B.CPF=C.CPF\_Cliente};
+        \node[operation]  (omega2) at (0,-6.5)  {$\sigma$ C.Valor>100 };
+        \node[operation]  (omega5) at (0,-5.5)  {$\pi$ C.CPF\_Cliente};
+        \node[table]      (tableC) at (0,-7.5)  {C};
+        \node[operation]  (fifth)  at (-6,-5.5) {$\bowtie$ A.CPF=B.CPF};
+        \node[operation]  (omega4) at (-9,-7.5){$\pi$ A.CPF, A.Nome};
+        \node[operation]  (omega3) at (-9,-8.5){$\sigma$ A.CPF\_Supervisor = null};
+        \node[table]      (tableA) at (-9,-9.5) {A};
+        \node[operation]  (omega7) at (-3,-7.5) {$\pi$ B.CPF, B.Nome};
+        \node[table]      (tableB) at (-3,-8.5) {B};
+        
+        %Lines
+        \draw[-] (first.south) -- (second.north);
+        \draw[-] (second.south) -- (omega6.north);
+        \draw[-] (omega6.south) -- (omega1.north);
+        \draw[-] (omega1.south) -- (tableD.north);
+        \draw[-] (second.south) -- (fourth.north);
+        \draw[-] (fourth.south) -- (omega5.north);
+        \draw[-] (omega5.south) -- (omega2.north);
+        \draw[-] (omega2.south) -- (tableC.north);
+        \draw[-] (fourth.south) -- (fifth.north);
+        \draw[-] (fifth.south) -- (omega4.north);
+        \draw[-] (omega4.south) -- (omega3.north);
+        \draw[-] (omega3.south) -- (tableA.north);
+        \draw[-] (fifth.south) -- (omega7.north);
+        \draw[-] (omega7.south) -- (tableB.north);
+        \end{tikzpicture}
+    \end{center}
+    
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Query Otimizada}
+
+    Em Algebra Relacional
+    \begin{flushleft}
+      A $\rightarrow$ $\pi$ A.Nome, A.CPF $\sigma$ A.CPF\_Supervisor=null $\rho$ A Funcionarios 
+
+      B $\rightarrow$ $\pi$ B.Nome, B.CPF $\rho$ B Clientes
+ 
+      AB $\rightarrow$ A $\bowtie$ A.CPF=B.CPF B
+ 
+      C $\rightarrow$ $\pi$ C.CPF\_Cliente $\sigma$ ValorPagar>100 $\rho$ C Aluguel
+ 
+      CAB $\rightarrow$ AB $\bowtie$ B.CPF=C.CPF\_Cliente C
+ 
+      D $\rightarrow$ $\pi$ D.CPF\_Cliente $\sigma$ ValorPagar<50 $\rho$ D Funcionarios 
+ 
+      DCAB $\rightarrow$ CAB $\bowtie$ A.CPF=D.CPF\_Supervisor D
+ 
+      $\pi$ A.CPF, A.Nome, B.Nome DCAB
+    \end{flushleft}
+  \end{frame}
+  % ----------------- NOVO SLIDE --------------------------------
+  \begin{frame}{Plano de execução}
+    
+    \begin{enumerate}
+      \item Pesquisa Linear 
+      \item Junção de Loop Único
+      \item Pesquisa Linear 
+      \item Junção de Loop Único 
+      \item Pesquisa Linear 
+      \item Junção de Loop Único
+    \end{enumerate}
+  \end{frame}
+% ----------------- FIM DO DOCUMENTO -----------------------------------------
+\end{document}

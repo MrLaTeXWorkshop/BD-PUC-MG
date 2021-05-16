@@ -1,0 +1,88 @@
+group: BD Wlad
+description: Simulacao do Modelo Relacional usado pela disciplina de Banco de Dados da PUC-MG
+category@de:MRGUARA
+category@en:MRGUARA
+
+Funcionarios = {
+CPF, Nome, CPF_Supervisor
+
+'97792601187', 'James M Barnes', '97792601187'
+'45571612369', 'William A Schneider', '71526465733'
+'52870166431', 'Jenifer D Kent', '45571612369'
+'97930188133', 'Joan C Wyrick', '52870166431'
+'71526465733', 'Molly K Tart', '97930188133'
+}
+
+Clientes = {
+CPF, Nome, Endereco, Telefone, DataNascimento, Sexo
+
+'49623783580', 'Theron D Cook', '1452  Memory Lane', '614-274-4718', '10/24/1985', 'M'
+'37356234092', 'Susan J Renfro','515  Cecil Street', '219-362-2694', '3/16/1976' ,'F'
+'27978090655', 'Yasmin K Stanger','4176  Woodside Circle', '602-749-9084', '5/30/1979', 'F'
+'13344062814', 'Valerie J Vanzandt','3572  Maxwell Street', '405-248-7167', '11/5/1963', 'F'
+'78928489676', 'Manuel C Brown', '4432  Hanifan Lane', '901-348-3142', '11/1/1987', 'M'
+}
+
+Aluguel = {
+CPF_Cliente, ID_Midia, DataLocacao, DataDevolucao, ValorPagar, CPF_Funcionario
+
+'49623783580', '41234', '04/24/2021', '05/24/2021', 23.99, '97792601187'
+'37356234092', '12485', '05/10/2021', '06/10/2021', 36.32, '45571612369'
+'27978090655', '58216', '03/21/2021' ,'04/21/2021', 50.55, '52870166431'
+'13344062814', '78923', '01/21/2021', '02/21/2021', 16.45, '97930188133'
+'78928489676', '48176', '06/15/2021', '07/15/2021', 57.44, '71526465733'
+}
+
+Midias = {
+Identificador, Tipo, PrecoDiaria, CodFilme
+
+'41234', 'Digital', 1.99, '414807'
+'12485', 'CD', 3.22, '677897'
+'58216', 'Blu-ray', 6.33, '717592'
+'78923', 'Digital', 2.55, '269756'
+'48176', 'Digital', 2.99, '548880'
+}
+
+Pagamentos = {
+Codigo, CPF_Cliente, ID_Midia, DataLocacao, Data, Valor
+
+'832', '49623783580', '41234', '04/24/2021', '04/21/2021', 23.99
+'162', '37356234092','12485', '05/10/2021', '06/05/2021', 36.32
+'683', '27978090655', '58216', '03/21/2021', '04/11/2021', 50.55
+'384', '13344062814', '78923', '01/21/2021', '02/23/2021', 18.45
+}
+
+Atores = {
+Codigo, Nome
+
+'1848285392013495', 'Brad Pitt'
+'8957237325912371', 'Samuel L Jackson'
+'5872365961237683', 'Christian Bale'
+'7589239512957623', 'Jared Letto'
+'9927836261576872', 'Quentin Tarantino'
+'2837219672365832', 'John Travolta'
+'6782389712396723', 'Tom Holland'
+}
+
+Filmes = {
+Codigo, Nome, Genero
+
+'414807', 'Star Wars', 'Science Fiction'
+'677897', 'The Prestige', 'Suspense'
+'717592', 'Oldboy', 'Noir'
+'269756', 'The Spiderwick Chronicles','Fantasy'
+'548880','Mission Impossible','Action'
+'415590', 'Toy Story', 'Adventure'
+'965665', 'Suicide Squad', 'Action'
+'805996', 'Pulp Fiction', 'Drama'
+'821723', 'Spider-Man: Far From Home', 'Adventure'
+}
+
+AtoresEmFilmes = {
+CodFilme, CodAtor
+
+'805996', '8957237325912371'
+'805996', '9927836261576872'
+'965665', '7589239512957623'
+'821723','6782389712396723'
+}

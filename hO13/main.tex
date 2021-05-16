@@ -1,0 +1,201 @@
+\documentclass[aspectratio=169]{beamer}	 	
+% ---
+% PACOTES
+% ---
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+\usepackage[brazil]{babel}		% Idioma do documento
+\usepackage{color}			      % Controle das cores
+\usepackage[T1]{fontenc}		  % Selecao de codigos de fonte.
+\usepackage{graphicx}			    % Inclusão de gráficos
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{txfonts}			    % Fontes virtuais
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+\usetheme{Warsaw}
+
+\setbeamercolor{normal text}{fg=white,bg=black!85}
+\setbeamercolor{structure}{fg=white}
+
+\setbeamercolor{alerted text}{fg=red!85!black}
+
+\setbeamercolor{item projected}{use=item,fg=black,bg=item.fg!35}
+
+\setbeamercolor*{framesubtitle}{fg=white}
+
+\setbeamercolor*{block title}{parent=structure,bg=black!60}
+\setbeamercolor*{block body}{fg=black,bg=black!10}
+\setbeamercolor*{block title alerted}{parent=alerted text,bg=black!15}
+\setbeamercolor*{block title example}{parent=example text,bg=black!15}
+
+\setbeamercolor{titlelike}{parent=structure}
+
+% para fontes matemáticas
+% Enconte mais temas e cores em http://www.hartwork.org/beamer-theme-matrix/ 
+% Veja também http://deic.uab.es/~iblanes/beamer_gallery/index.html
+
+% Customizações de Cores: fg significa cor do texto e bg é cor do fundo
+
+% informações do PDF
+\makeatletter
+\hypersetup{
+     	%pagebackref=true,
+		pdftitle={\@title}, 
+		pdfauthor={\@author},
+    	pdfsubject={Hands-On 13},
+	    pdfcreator={GLR},
+		pdfkeywords={HandsOn13}{LaTeX}, 
+		colorlinks=true,       		% false: boxed links; true: colored links
+    	linkcolor=black,          	% color of internal links
+    	citecolor=blue,        		% color of links to bibliography
+    	filecolor=magenta,      		% color of file links
+		urlcolor=blue,
+		bookmarksdepth=4
+}
+\makeatother
+
+    %TABELA DE CONTEÚDO
+
+    \setbeamercolor{section in toc}{fg=alerted text.fg, fg = red}
+    
+
+    \definecolor{SectionBox}{RGB}{60,160,0}
+    \definecolor{UniGreen}{RGB}{ 0,139,0}
+    \definecolor{TitleGreen}{RGB}{0,120,0}
+    \setbeamercolor{title}{fg=TitleGreen}
+    \setbeamercolor{structure}{fg=UniGreen} 
+    \setbeamercolor{item projected}{bg=UniGreen, fg=white} %define color of the item-bullets
+    \setbeamercolor{button}{bg=UniGreen}
+
+    \setbeamertemplate{section in head/foot}{\hfill\protect\tikz\protect\node[rectangle,fill=SectionBox!90,rounded corners=1pt,inner sep=1pt,] {\textcolor{white}{\insertsectionhead}};}
+    \setbeamertemplate{section in head/foot shaded}{\textcolor{structure!40}{\hfill\insertsectionhead}}
+
+    \setbeamertemplate{headline}{%
+\leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{palette quaternary}%
+    \insertsectionnavigationhorizontal{\paperwidth}{}{\hskip0pt plus1filll}
+    \end{beamercolorbox}%
+  }
+}
+
+\insertsectionnavigationhorizontal{\paperwidth}{\hskip0pt plus1filll}{\hskip0pt plus1filll}
+
+
+% ---
+
+% --- Informações do documento ---
+\title{Hands-On 13}
+% ---
+
+% ----------------- INÍCIO DO DOCUMENTO --------------------------------------
+\begin{document}
+    % ----------------- NOVO SLIDE --------------------------------
+    \begin{frame}
+
+    \titlepage
+
+    \end{frame}
+
+    % ----------------- NOVO SLIDE --------------------------------]
+    \section{Query 1}
+
+    \begin{frame}{Query}
+
+      SELECT DISTINCT A.CPF, A.Nome
+
+      FROM Funcionarios A
+
+      WHERE A.CPF IN (SELECT CPF\_Supervisor FROM Funcionarios)
+
+      AND A.CPF NOT IN (SELECT CPF FROM Clientes)
+
+    \end{frame}
+    \begin{frame}{Query Otimizada}
+      SELECT DISTINCT CPF, CPF\_Supervisor INTO TMP1
+
+      FROM Funcionarios;
+
+      SELECT DISTINCT A.CPF, A.Nome
+
+      FROM Funcionarios A, TMP
+
+      LEFT OUTER JOIN Clientes C ON A.CPF = C.CPF WHERE C.CPF IS NULL
+    \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+    \section{Query 2}
+
+    \begin{frame}{Query}
+
+        SELECT A.CodFilme, B.Nome
+
+        FROM Midias A, Filmes B
+
+        WHERE A.CodFilme = B.Codigo
+
+        AND A.Tipo = 'DVD'
+
+        OR A.Tipo = 'VHS'
+
+    \end{frame}
+    \begin{frame}{Query Otimizada}
+
+        SELECT A.CodFilme, B.Nome
+
+        FROM Midias A, Filmes B
+
+        WHERE A.CodFilme = B.Codigo AND (A.Tipo = 'DVD')
+
+        UNION
+
+        SELECT A.CodFilme, B.Nome
+
+        FROM Midias A, Filmes B
+
+        WHERE A.CodFilme = B.Codigo AND (A.Tipo = 'VHS')
+
+    \end{frame}
+    % ----------------- NOVO SLIDE --------------------------------
+    \section{Query 3}
+
+    \begin{frame}{Query}
+
+        SELECT A.CPF\_Cliente, A.ID\_Midia, A.DataLocacao
+
+        FROM Aluguel A, Clientes B
+
+        WHERE A.CPF\_Cliente = B.CPF
+
+        AND B.Sexo != "F"
+
+        AND EXISTS (SELECT * FROM Pagamentos C
+
+        WHERE C.CPF\_Cliente = A.CPF\_Cliente
+
+        AND C.ID\_Midia = A.ID\_Midia
+
+        AND C.DataLocacao = A.DataLocacao)
+
+    \end{frame}
+
+    \begin{frame}{Query Otimizada}
+
+        SELECT * INTO TEMP
+        
+        FROM Pagamentos 
+
+        GROUP BY CPF\_Cliente, ID\_Midia, DataLocacao;
+
+        SELECT DISTINCT A.CPF\_Cliente, A.ID\_Midia, A.DataLocacao
+
+        FROM Aluguel A, Clientes B, TEMP C
+
+        WHERE A.CPF\_Cliente = B.CPF
+
+        AND B.Sexo != "F"
+
+    \end{frame}
+
+% ----------------- FIM DO DOCUMENTO -----------------------------------------
+\end{document}
